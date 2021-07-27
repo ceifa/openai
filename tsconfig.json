@@ -1,0 +1,31 @@
+{
+    "compilerOptions": {
+        "incremental": false,
+        "moduleResolution": "node",
+        "inlineSources": false,
+        "removeComments": true,
+        "sourceMap": false,
+        "target": "ES6",
+        "module": "UMD",
+        "skipLibCheck": true,
+        "lib": [
+            "ESNEXT",
+            "DOM"
+        ],
+        "forceConsistentCasingInFileNames": true,
+        "noImplicitReturns": true,
+        "noImplicitThis": true,
+        "noImplicitAny": true,
+        "noUnusedParameters": true,
+        "noUnusedLocals": true,
+        "importHelpers": true,
+        "strict": true,
+        "outDir": "dist"
+    },
+    "include": [
+        "src/**/*"
+    ],
+    "exclude": [
+        "node_modules"
+    ],
+}
