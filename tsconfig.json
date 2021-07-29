@@ -8,10 +8,7 @@
         "target": "ES6",
         "module": "UMD",
         "skipLibCheck": true,
-        "lib": [
-            "ESNEXT",
-            "DOM"
-        ],
+        "lib": ["ESNEXT", "DOM"],
         "forceConsistentCasingInFileNames": true,
         "noImplicitReturns": true,
         "noImplicitThis": true,
@@ -22,10 +19,6 @@
         "strict": true,
         "outDir": "dist"
     },
-    "include": [
-        "src/**/*"
-    ],
-    "exclude": [
-        "node_modules"
-    ],
+    "include": ["src/**/*"],
+    "exclude": ["node_modules"]
 }

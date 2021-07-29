@@ -8,14 +8,10 @@ export default class OpenAI {
     private readonly url: string
     private readonly headers: Record<string, string>
 
-    constructor(
-        apiKey: string,
-        organizationId?: string,
-        version: string = defaultVersion
-    ) {
+    constructor(apiKey: string, organizationId?: string, version: string = defaultVersion) {
         this.headers = {
             'Authorization': `Bearer ${apiKey}`,
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
         }
 
         if (organizationId) {
@@ -26,15 +22,19 @@ export default class OpenAI {
     }
 
     public async getEngines(): Promise<Engine[]> {
-        const result = await this.request('/engines', 'GET') as DataContainer<Engine[]>
+        const result = await this.request<DataContainer<Engine[]>>('/engines', 'GET')
         return result.data
     }
 
-    private async request(path: string, method: string, body?: unknown): Promise<unknown> {
+    private async request<TResponse, TRequest = unknown>(
+        path: string,
+        method: string,
+        body?: TRequest,
+    ): Promise<TResponse> {
         const response = await fetch(this.url + path, {
             headers: this.headers,
             method,
-            body: typeof body === 'string' ? body : JSON.stringify(body)
+            body: typeof body === 'string' ? body : JSON.stringify(body),
         })
 
         if (!response.ok) {

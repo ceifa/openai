@@ -1,10 +1,6 @@
 {
     "root": true,
-    "plugins": [
-        "@typescript-eslint",
-        "prettier",
-        "sort-imports-es6-autofix"
-    ],
+    "plugins": ["@typescript-eslint", "prettier", "sort-imports-es6-autofix"],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
         "project": "./tsconfig.json"
@@ -19,11 +15,7 @@
     "env": {
         "es6": true
     },
-    "ignorePatterns": [
-        "dist/*",
-        "sample/*",
-        "rollup.config.js"
-    ],
+    "ignorePatterns": ["dist/*", "sample/*", "rollup.config.js"],
     "rules": {
         "no-console": "off",
         "@typescript-eslint/no-unsafe-call": "off",
@@ -63,10 +55,7 @@
                 ]
             }
         ],
-        "curly": [
-            "error",
-            "all"
-        ],
+        "curly": ["error", "all"],
         "eqeqeq": "error",
         "max-classes-per-file": "error",
         "no-alert": "error",
@@ -91,10 +80,7 @@
         "no-useless-concat": "error",
         "no-void": "error",
         "prefer-promise-reject-errors": "error",
-        "radix": [
-            "error",
-            "always"
-        ],
+        "radix": ["error", "always"],
         "no-shadow": "off",
         "no-confusing-arrow": [
             "error",
@@ -113,10 +99,7 @@
                 "default": "array-simple"
             }
         ],
-        "@typescript-eslint/consistent-type-definitions": [
-            "error",
-            "interface"
-        ],
+        "@typescript-eslint/consistent-type-definitions": ["error", "interface"],
         "@typescript-eslint/explicit-function-return-type": [
             "error",
             {
