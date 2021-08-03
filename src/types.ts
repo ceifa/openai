@@ -1,7 +1,5 @@
 export type EngineId = 'davinci' | 'curie' | 'babbage' | 'ada' | string
 
-// The 'unknowns' it's because I don't actually know
-// TODO: Discover these types
 export interface Engine {
     id: EngineId
     object: string
@@ -62,4 +60,79 @@ export interface SearchDocument {
     document: number
     object: string
     score: number
+}
+
+export interface ClassificationRequest {
+    model: string
+    query: string
+    examples?: string[]
+    file?: string
+    labels?: string[] | null
+    search_model?: string
+    temperature?: number
+    logprobs?: number
+    max_examples?: number
+    logit_bias?: Record<string, unknown>
+    return_prompt?: boolean
+    return_metadata?: boolean
+    expand?: string[]
+}
+
+export interface ClassificationExample {
+    document: number
+    label: string
+    text: string
+}
+
+export interface Classification {
+    completion: string
+    label: string
+    model: string
+    object: string
+    search_model: string
+    selected_examples: ClassificationExample[]
+}
+
+export interface AnswerRequest {
+    model: string
+    question: string
+    examples: Array<[string, string]>
+    examples_context: string
+    documents?: string[]
+    file?: string
+    search_model?: string
+    max_rerank?: number
+    temperature?: number
+    logprobs?: number
+    max_tokens?: number
+    stop?: string | string[]
+    n?: number
+    logit_bias?: Record<string, unknown>
+    return_metadata?: boolean
+    return_prompt?: boolean
+    expand?: string[]
+}
+
+export interface AnswerDocument {
+    document: number
+    text: string
+}
+
+export interface Answer {
+    answers: string[]
+    completion: string | Completion
+    model: string
+    object: string
+    search_model: string
+    prompt: string
+    selected_documents: AnswerDocument[]
+}
+
+export interface File {
+    id: string
+    object: string
+    bytes: number
+    created_at: number
+    filename: string
+    purpose: string
 }

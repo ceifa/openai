@@ -1,5 +1,18 @@
 import fetch from 'node-fetch'
-import { Completion, CompletionRequest, DataContainer, Engine, EngineId, SearchDocument, SearchRequest } from './types'
+import type {
+    Answer,
+    AnswerRequest,
+    Classification,
+    ClassificationRequest,
+    Completion,
+    CompletionRequest,
+    DataContainer,
+    Engine,
+    EngineId,
+    File,
+    SearchDocument,
+    SearchRequest
+} from './types'
 
 const baseUrl = 'https://api.openai.com'
 const defaultVersion = 'v1'
@@ -22,20 +35,34 @@ export default class OpenAI {
     }
 
     public async getEngines(): Promise<Engine[]> {
-        const result = await this.request<DataContainer<Engine[]>>('/engines', 'GET')
-        return result.data
+        return this.request<DataContainer<Engine[]>>('/engines', 'GET')
+            .then(r => r.data)
     }
 
     public async getEngine(engine: EngineId): Promise<Engine> {
-        return await this.request<Engine>('/engines/' + engine, 'GET')
+        return this.request<Engine>(`/engines/${engine}`, 'GET')
     }
 
     public async complete(engine: EngineId, options: CompletionRequest): Promise<Completion> {
-        return await this.request<Completion>(`/engines/${engine}/completions`, 'POST', options)
+        return this.request<Completion>(`/engines/${engine}/completions`, 'POST', options)
     }
 
-    public async search(engine: EngineId, options: SearchRequest): Promise<DataContainer<SearchDocument[]>> {
-        return await this.request<DataContainer<SearchDocument[]>>(`/engines/${engine}/search`, 'POST', options)
+    public async search(engine: EngineId, options: SearchRequest): Promise<SearchDocument[]> {
+        return this.request<DataContainer<SearchDocument[]>>(`/engines/${engine}/search`, 'POST', options)
+            .then(r => r.data)
+    }
+
+    public async classify(options: ClassificationRequest): Promise<Classification> {
+        return this.request<Classification>('/classifications', 'POST', options)
+    }
+
+    public async answer(options: AnswerRequest): Promise<Answer> {
+        return this.request<Answer>('/answers', 'POST', options)
+    }
+
+    public async getFiles() : Promise<File[]> {
+        return this.request<DataContainer<File[]>>('/files', 'GET')
+            .then(r => r.data)
     }
 
     private async request<TResponse>(
