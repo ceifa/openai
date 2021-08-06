@@ -14,13 +14,12 @@ jobs:
 
         steps:
             - uses: actions/checkout@v2
-              with:
-                  submodules: recursive
-            - uses: mymindstorm/setup-emsdk@v7
+
             - name: Use Node.js ${{ matrix.node-version }}
               uses: actions/setup-node@v1
               with:
                   node-version: ${{ matrix.node-version }}
+
             - run: npm ci
             - run: npm run lint:nofix
             - run: npm run build

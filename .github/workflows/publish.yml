@@ -10,17 +10,16 @@ jobs:
 
         steps:
             - uses: actions/checkout@v2
-              with:
-                  submodules: recursive
-            - name: Use Node.js 14.x
+
+            - name: Use Node.js 16.x
               uses: actions/setup-node@v1
               with:
-                  node-version: 14.x
-            - uses: mymindstorm/setup-emsdk@v10
+                  node-version: 16.x
+
             - run: npm ci
             - run: npm run lint:nofix
             - run: npm run build
-            - run: npm test
+
             - uses: JS-DevTools/npm-publish@v1
               with:
                   token: ${{ secrets.NPM_TOKEN }}
