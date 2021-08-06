@@ -1,3 +1,4 @@
+// TODO: Document each interface property
 export type EngineId = 'davinci' | 'curie' | 'babbage' | 'ada' | string
 
 export interface Engine {

@@ -134,7 +134,7 @@ export default class OpenAI {
     }
 
     private async request<TResponse>(path: string, method: 'GET' | 'POST' | 'DELETE', body?: any): Promise<TResponse> {
-        let headers = this.headers
+        let headers = { ...this.headers }
 
         if (body instanceof FormData) {
             delete headers['content-type']

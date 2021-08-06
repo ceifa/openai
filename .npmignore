@@ -4,4 +4,4 @@ tsconfig.json
 .github
 .eslintrc.json
 .prettierignore
-.prettierrc.js
+.prettierrc
