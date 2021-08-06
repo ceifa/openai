@@ -161,7 +161,7 @@ export interface FineTuneRequest extends Hyperparams {
 }
 
 export interface FineTuneEvent {
-    object: 'fine-tune-event',
+    object: 'fine-tune-event'
     created_at: number
     // TODO: Improve level typing
     level: string
@@ -169,19 +169,19 @@ export interface FineTuneEvent {
 }
 
 export interface FineTune {
-    id: string,
-    object: 'fine-tune',
-    model: string,
-    created_at: number,
-    events: FineTuneEvent[],
-    fine_tuned_model: string,
-    hyperparams: Hyperparams,
-    organization_id: string,
-    result_files: File[],
+    id: string
+    object: 'fine-tune'
+    model: string
+    created_at: number
+    events: FineTuneEvent[]
+    fine_tuned_model: string
+    hyperparams: Hyperparams
+    organization_id: string
+    result_files: File[]
     // TODO: Improve status typing
-    status: string,
-    validation_files: File[],
-    training_files: File[],
-    updated_at: number,
+    status: string
+    validation_files: File[]
+    training_files: File[]
+    updated_at: number
     user_id: string
-  }
+}
