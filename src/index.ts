@@ -1,3 +1,4 @@
+import FormData from 'form-data'
 import fetch from 'node-fetch'
 import type {
     Answer,
@@ -6,12 +7,17 @@ import type {
     ClassificationRequest,
     Completion,
     CompletionRequest,
-    DataContainer,
     Engine,
     EngineId,
     File,
+    FilePurpose,
+    FineTune,
+    FineTuneEvent,
+    FineTuneRequest,
+    JsonLines,
+    List,
     SearchDocument,
-    SearchRequest
+    SearchRequest,
 } from './types'
 
 const baseUrl = 'https://api.openai.com'
@@ -22,62 +28,136 @@ export default class OpenAI {
     private readonly headers: Record<string, string>
 
     constructor(apiKey: string, organizationId?: string, version: string = defaultVersion) {
+        // https://beta.openai.com/docs/api-reference/authentication
         this.headers = {
-            'Authorization': `Bearer ${apiKey}`,
-            'Content-Type': 'application/json',
+            'authorization': `Bearer ${apiKey}`,
+            'content-type': 'application/json',
         }
 
         if (organizationId) {
-            this.headers['OpenAI-Organization'] = organizationId
+            this.headers['openai-organization'] = organizationId
         }
 
         this.url = `${baseUrl}/${version}`
     }
 
-    public async getEngines(): Promise<Engine[]> {
-        return this.request<DataContainer<Engine[]>>('/engines', 'GET')
-            .then(r => r.data)
+    // https://beta.openai.com/docs/api-reference/engines/list
+    public getEngines(): Promise<Engine[]> {
+        return this.request<List<Engine>>('/engines', 'GET').then((r) => r.data)
     }
 
-    public async getEngine(engine: EngineId): Promise<Engine> {
+    // https://beta.openai.com/docs/api-reference/engines/retrieve
+    public getEngine(engine: EngineId): Promise<Engine> {
         return this.request<Engine>(`/engines/${engine}`, 'GET')
     }
 
-    public async complete(engine: EngineId, options: CompletionRequest): Promise<Completion> {
+    // https://beta.openai.com/docs/api-reference/completions/create
+    public complete(engine: EngineId, options: CompletionRequest): Promise<Completion> {
         return this.request<Completion>(`/engines/${engine}/completions`, 'POST', options)
     }
 
-    public async search(engine: EngineId, options: SearchRequest): Promise<SearchDocument[]> {
-        return this.request<DataContainer<SearchDocument[]>>(`/engines/${engine}/search`, 'POST', options)
-            .then(r => r.data)
+    // https://beta.openai.com/docs/api-reference/searches/create
+    public search(engine: EngineId, options: SearchRequest): Promise<SearchDocument[]> {
+        return this.request<List<SearchDocument>>(`/engines/${engine}/search`, 'POST', options).then((r) => r.data)
     }
 
-    public async classify(options: ClassificationRequest): Promise<Classification> {
+    // https://beta.openai.com/docs/api-reference/classifications/create
+    public classify(options: ClassificationRequest): Promise<Classification> {
         return this.request<Classification>('/classifications', 'POST', options)
     }
 
-    public async answer(options: AnswerRequest): Promise<Answer> {
+    // https://beta.openai.com/docs/api-reference/answers/create
+    public answer(options: AnswerRequest): Promise<Answer> {
         return this.request<Answer>('/answers', 'POST', options)
     }
 
-    public async getFiles() : Promise<File[]> {
-        return this.request<DataContainer<File[]>>('/files', 'GET')
-            .then(r => r.data)
+    // https://beta.openai.com/docs/api-reference/files/list
+    public getFiles(): Promise<File[]> {
+        return this.request<List<File>>('/files', 'GET').then((r) => r.data)
     }
 
-    private async request<TResponse>(
-        path: string,
-        method: string,
-        body?: any,
-    ): Promise<TResponse> {
+    // https://beta.openai.com/docs/api-reference/files/upload
+    public uploadFile(file: string, jsonlines: JsonLines, purpose: FilePurpose): Promise<File> {
+        const data = new FormData()
+
+        let fileJsonlines: string
+
+        if (Array.isArray(jsonlines)) {
+            if (typeof jsonlines[0] === 'object') {
+                jsonlines = jsonlines.map((j) => JSON.stringify(j))
+            }
+
+            fileJsonlines = jsonlines.join('\n')
+        } else {
+            fileJsonlines = jsonlines
+        }
+
+        data.append('file', fileJsonlines, file)
+        data.append('purpose', purpose)
+
+        return this.request<File>('/files', 'POST', data)
+    }
+
+    // https://beta.openai.com/docs/api-reference/files/retrieve
+    public getFile(fileId: string): Promise<File> {
+        return this.request<File>(`/files/${fileId}`, 'GET')
+    }
+
+    // https://beta.openai.com/docs/api-reference/files/delete
+    public deleteFile(fileId: string): Promise<void> {
+        return this.request<void>(`/files/${fileId}`, 'DELETE')
+    }
+
+    // https://beta.openai.com/docs/api-reference/fine-tunes/create
+    public finetune(options: FineTuneRequest): Promise<FineTune> {
+        return this.request<FineTune>(`/fine-tunes`, 'POST', options)
+    }
+
+    // https://beta.openai.com/docs/api-reference/fine-tunes/list
+    public getFinetunes(): Promise<FineTune[]> {
+        return this.request<List<FineTune>>('/fine-tunes', 'GET').then((r) => r.data)
+    }
+
+    // https://beta.openai.com/docs/api-reference/fine-tunes/retrieve
+    public getFinetune(finetuneId: string): Promise<FineTune> {
+        return this.request<FineTune>(`/fine-tunes/${finetuneId}`, 'GET')
+    }
+
+    // https://beta.openai.com/docs/api-reference/fine-tunes/cancel
+    public cancelFinetune(finetuneId: string): Promise<FineTune> {
+        return this.request<FineTune>(`/fine-tunes/${finetuneId}/cancel`, 'POST')
+    }
+
+    // https://beta.openai.com/docs/api-reference/fine-tunes/events
+    public getFinetuneEvents(finetuneId: string): Promise<FineTuneEvent[]> {
+        return this.request<List<FineTuneEvent>>(`/fine-tunes/${finetuneId}/events`, 'GET').then((r) => r.data)
+    }
+
+    private async request<TResponse>(path: string, method: 'GET' | 'POST' | 'DELETE', body?: any): Promise<TResponse> {
+        let headers = this.headers
+
+        if (body instanceof FormData) {
+            delete headers['content-type']
+            headers = body.getHeaders(headers)
+        } else if (!['string', 'undefined'].includes(typeof body)) {
+            body = JSON.stringify(body)
+        }
+
         const response = await fetch(this.url + path, {
-            headers: this.headers,
+            headers,
             method,
-            body: ['string', 'undefined'].includes(typeof body) ? body : JSON.stringify(body),
+            body: body,
         })
 
         if (!response.ok) {
-            throw new Error(`OpenAI did not return ok: ${response.status}`)
+            let errorBody
+            try {
+                errorBody = await response.text()
+            } catch {
+                errorBody = 'Failed to get body as text'
+            }
+
+            throw new Error(`OpenAI did not return ok: ${response.status} ~ Error body: ${errorBody}`)
         }
 
         return response.json()

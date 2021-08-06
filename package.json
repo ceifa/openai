@@ -1,6 +1,6 @@
 {
     "name": "openai",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "description": "",
     "main": "src/index.ts",
     "scripts": {
@@ -26,18 +26,19 @@
     },
     "homepage": "https://github.com/ceifa/openai#readme",
     "devDependencies": {
-        "@types/node-fetch": "^2.5.12",
-        "@typescript-eslint/eslint-plugin": "4.28.5",
-        "@typescript-eslint/parser": "4.28.5",
-        "eslint": "7.31.0",
+        "@types/node-fetch": "2.5.12",
+        "@typescript-eslint/eslint-plugin": "4.29.0",
+        "@typescript-eslint/parser": "4.29.0",
+        "eslint": "7.32.0",
         "eslint-config-prettier": "8.3.0",
         "eslint-plugin-prettier": "3.4.0",
         "eslint-plugin-sort-imports-es6-autofix": "0.6.0",
         "prettier": "2.3.2",
-        "tslib": "2.3.0",
         "typescript": "4.3.5"
     },
     "dependencies": {
-        "node-fetch": "^2.6.1"
+        "form-data": "4.0.0",
+        "node-fetch": "2.6.1",
+        "tslib": "2.3.0"
     }
 }
