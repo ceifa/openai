@@ -32,6 +32,7 @@ export interface CompletionRequest {
     frequency_penalty?: number
     best_of?: number
     logit_bias?: Record<string, unknown>
+    user?: string
 }
 
 export interface Choice {
