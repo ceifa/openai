@@ -1,6 +1,6 @@
 {
     "name": "openai",
-    "version": "0.0.4",
+    "version": "0.0.5",
     "description": "Tiny OpenAI API wrapper",
     "main": "dist/index.js",
     "scripts": {

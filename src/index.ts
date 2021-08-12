@@ -23,7 +23,7 @@ import type {
 const baseUrl = 'https://api.openai.com'
 const defaultVersion = 'v1'
 
-export default class OpenAI {
+export class OpenAI {
     private readonly url: string
     private readonly headers: Record<string, string>
 
