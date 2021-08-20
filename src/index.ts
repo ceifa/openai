@@ -1,5 +1,5 @@
 import FormData from 'form-data'
-import fetch from 'node-fetch'
+import fetch, { Response } from 'node-fetch'
 import type {
     Answer,
     AnswerRequest,
@@ -55,6 +55,18 @@ export class OpenAI {
     public complete(engine: EngineId, options: CompletionRequest): Promise<Completion> {
         return this.request<Completion>(`/engines/${engine}/completions`, 'POST', options)
     }
+
+    // public async completionTextStream(engine: EngineId, options: CompletionRequest): Promise<void> {
+    //     const request = await this.requestRaw(`/engines/${engine}/completions`, 'POST', { ...options, stream: true })
+
+    //     request.body.on('data', (chunk: Buffer) => {
+    //         // Remove buffer header "data: "
+    //         // [0x64, 0x61, 0x74, 0x61, 0x3a, 0x20]
+    //         // const body = JSON.parse(chunk.slice(6).toString()) as Completion
+    //         // if (0x5b)
+    //         // body.choices[0].text
+    //     })
+    // }
 
     // https://beta.openai.com/docs/api-reference/searches/create
     public search(engine: EngineId, options: SearchRequest): Promise<SearchDocument[]> {
@@ -133,7 +145,7 @@ export class OpenAI {
         return this.request<List<FineTuneEvent>>(`/fine-tunes/${finetuneId}/events`, 'GET').then((r) => r.data)
     }
 
-    private async request<TResponse>(path: string, method: 'GET' | 'POST' | 'DELETE', body?: any): Promise<TResponse> {
+    private async requestRaw(path: string, method: 'GET' | 'POST' | 'DELETE', body?: any): Promise<Response> {
         let headers = { ...this.headers }
 
         if (body instanceof FormData) {
@@ -160,6 +172,11 @@ export class OpenAI {
             throw new Error(`OpenAI did not return ok: ${response.status} ~ Error body: ${errorBody}`)
         }
 
+        return response
+    }
+
+    private async request<TResponse>(path: string, method: 'GET' | 'POST' | 'DELETE', body?: any): Promise<TResponse> {
+        const response = await this.requestRaw(path, method, body)
         return response.json()
     }
 }

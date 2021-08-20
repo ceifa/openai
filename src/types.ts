@@ -24,7 +24,6 @@ export interface CompletionRequest {
     temperature?: number
     top_p?: number
     n?: number
-    stream?: boolean
     logprobs?: number
     echo?: boolean
     stop?: string | string[]
