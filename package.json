@@ -26,9 +26,10 @@
     },
     "homepage": "https://github.com/ceifa/openai#readme",
     "devDependencies": {
+        "@types/node": "16.7.0",
         "@types/node-fetch": "2.5.12",
-        "@typescript-eslint/eslint-plugin": "4.29.0",
-        "@typescript-eslint/parser": "4.29.0",
+        "@typescript-eslint/eslint-plugin": "4.29.2",
+        "@typescript-eslint/parser": "4.29.2",
         "eslint": "7.32.0",
         "eslint-config-prettier": "8.3.0",
         "eslint-plugin-prettier": "3.4.0",
@@ -39,6 +40,6 @@
     "dependencies": {
         "form-data": "4.0.0",
         "node-fetch": "2.6.1",
-        "tslib": "2.3.0"
+        "tslib": "2.3.1"
     }
 }

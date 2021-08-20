@@ -1,3 +1,4 @@
+import { Readable, Transform } from 'stream'
 import FormData from 'form-data'
 import fetch, { Response } from 'node-fetch'
 import type {
@@ -56,17 +57,31 @@ export class OpenAI {
         return this.request<Completion>(`/engines/${engine}/completions`, 'POST', options)
     }
 
-    // public async completionTextStream(engine: EngineId, options: CompletionRequest): Promise<void> {
-    //     const request = await this.requestRaw(`/engines/${engine}/completions`, 'POST', { ...options, stream: true })
+    public async completionTextStream(engine: EngineId, options: CompletionRequest): Promise<Readable> {
+        const request = await this.requestRaw(`/engines/${engine}/completions`, 'POST', { ...options, stream: true })
 
-    //     request.body.on('data', (chunk: Buffer) => {
-    //         // Remove buffer header "data: "
-    //         // [0x64, 0x61, 0x74, 0x61, 0x3a, 0x20]
-    //         // const body = JSON.parse(chunk.slice(6).toString()) as Completion
-    //         // if (0x5b)
-    //         // body.choices[0].text
-    //     })
-    // }
+        console.warn("Stream completion is an experimental feature, please don't use in production")
+
+        const transform = new Transform({
+            transform: (chunk, _, callback) => {
+                // Remove buffer header "data: "
+                // [0x64, 0x61, 0x74, 0x61, 0x3a, 0x20]
+                const body = chunk.slice(6).toString().trim()
+                if (body && body[0] !== '[') {
+                    try {
+                        const completion = JSON.parse(body) as Completion
+                        return callback(undefined, completion.choices[0].text)
+                    } catch (e) {
+                        throw new Error(`Faile to parse: "${chunk.toString()}"`)
+                    }
+                }
+
+                callback()
+            },
+        })
+
+        return request.body.pipe(transform)
+    }
 
     // https://beta.openai.com/docs/api-reference/searches/create
     public search(engine: EngineId, options: SearchRequest): Promise<SearchDocument[]> {
