@@ -60,7 +60,7 @@ export class OpenAI {
     public async completionTextStream(engine: EngineId, options: CompletionRequest): Promise<Readable> {
         const request = await this.requestRaw(`/engines/${engine}/completions`, 'POST', { ...options, stream: true })
 
-        console.warn("Stream completion is an experimental feature, please don't use in production")
+        console.warn("Stream completion is an experimental feature, don't use on production")
 
         const transform = new Transform({
             transform: (chunk, _, callback) => {

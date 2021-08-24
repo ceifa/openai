@@ -1,6 +1,8 @@
 # OpenAI
 
-A tiny async wrapper library for [OpenAI GPT-3 API](https://beta.openai.com/docs/api-reference/introduction).
+A tiny async production-ready wrapper for [OpenAI GPT-3 API](https://beta.openai.com/docs/api-reference/introduction).
+
+**This is unofficial library and has no affiliations with OpenAI**
 
 ## Installation
 
@@ -55,6 +57,18 @@ const completion = await openai.complete('curie', {
 ```
 
 The options argument(2nd) properties follow the exactly same names as shown on official docs.
+
+Make a completion and stream the response:
+
+```js
+// Very experimental! Don't use on production!!!
+const stream = await openai.completionTextStream('curie', {
+    prompt: 'Q: Hello\nA:',
+    user: 'user-123'
+});
+
+stream.pipe(response)
+```
 
 ### Search
 
