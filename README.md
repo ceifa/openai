@@ -2,7 +2,7 @@
 
 A tiny async production-ready wrapper for [OpenAI GPT-3 API](https://beta.openai.com/docs/api-reference/introduction).
 
-**This is unofficial library and has no affiliations with OpenAI**
+**This is an unofficial library and has no affiliations with OpenAI**
 
 ## Installation
 
