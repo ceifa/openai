@@ -34,10 +34,17 @@ export interface CompletionRequest {
     user?: string
 }
 
+export interface LogProbs {
+    tokens: string[]
+    token_logprobs: number[]
+    top_logprobs: Array<Record<string, number>>
+    text_offset: number[]
+}
+
 export interface Choice {
     text: string
     index: number
-    logprobes: number | null
+    logprobs: LogProbs
     finish_reason: string | null
 }
 
@@ -185,4 +192,10 @@ export interface FineTune {
     training_files: File[]
     updated_at: number
     user_id: string
+}
+
+export const enum ContentLabel {
+    Safe,
+    Sensitive,
+    Unsafe,
 }

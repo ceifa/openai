@@ -1,13 +1,11 @@
-import { Readable, Transform } from 'stream'
-import FormData from 'form-data'
-import fetch, { Response } from 'node-fetch'
-import type {
+import {
     Answer,
     AnswerRequest,
     Classification,
     ClassificationRequest,
     Completion,
     CompletionRequest,
+    ContentLabel,
     Engine,
     EngineId,
     File,
@@ -20,6 +18,9 @@ import type {
     SearchDocument,
     SearchRequest,
 } from './types'
+import { Readable, Transform } from 'stream'
+import FormData from 'form-data'
+import fetch, { Response } from 'node-fetch'
 
 const baseUrl = 'https://api.openai.com'
 const defaultVersion = 'v1'
@@ -81,6 +82,41 @@ export class OpenAI {
         })
 
         return request.body.pipe(transform)
+    }
+
+    // https://beta.openai.com/docs/engines/content-filter
+    public async contentFilter(content: string, user?: string): Promise<ContentLabel> {
+        const completion = await this.complete('content-filter-alpha-c4', {
+            prompt: `<|endoftext|>${content}\n--\nLabel:`,
+            temperature: 0,
+            max_tokens: 1,
+            top_p: 1,
+            frequency_penalty: 0,
+            presence_penalty: 0,
+            logprobs: 10,
+            user,
+        })
+
+        let label = Number(completion.choices[0].text) as ContentLabel
+        if (label === ContentLabel.Unsafe) {
+            const logprobs = completion.choices[0].logprobs.top_logprobs[0]
+
+            if (logprobs['2'] < -0.355) {
+                if (logprobs['0'] && logprobs['1']) {
+                    label = logprobs['0'] >= logprobs['1'] ? ContentLabel.Safe : ContentLabel.Sensitive
+                } else if (logprobs['0']) {
+                    label = ContentLabel.Safe
+                } else if (logprobs['1']) {
+                    label = ContentLabel.Sensitive
+                }
+            }
+        }
+
+        if (![0, 1, 2].includes(label)) {
+            label = ContentLabel.Unsafe
+        }
+
+        return label
     }
 
     // https://beta.openai.com/docs/api-reference/searches/create
