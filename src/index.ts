@@ -25,6 +25,7 @@ import fetch, { Response } from 'node-fetch'
 const baseUrl = 'https://api.openai.com'
 const defaultVersion = 'v1'
 
+export * from './types'
 export class OpenAI {
     private readonly url: string
     private readonly headers: Record<string, string>
