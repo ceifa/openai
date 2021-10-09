@@ -32,6 +32,7 @@ export interface CompletionRequest {
     best_of?: number
     logit_bias?: Record<string, unknown>
     user?: string
+    model?: string //fine-tuned Model
 }
 
 export interface LogProbs {
@@ -44,7 +45,7 @@ export interface LogProbs {
 export interface Choice {
     text: string
     index: number
-    logprobs: LogProbs
+    logprobs: LogProbs | null
     finish_reason: string | null
 }
 
