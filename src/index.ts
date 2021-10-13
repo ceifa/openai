@@ -64,30 +64,18 @@ export class OpenAI {
         return this.request<Completion>(`/completions`, 'POST', { ...options, model: fineTunedModel })
     }
 
-    public async completionTextStream(engine: EngineId, options: CompletionRequest): Promise<Readable> {
+    public async completeAndStream(engine: EngineId, options: CompletionRequest): Promise<Readable> {
         const request = await this.requestRaw(`/engines/${engine}/completions`, 'POST', { ...options, stream: true })
+        return request.body.pipe(this.eventStreamTransformer())
+    }
 
-        console.warn("Stream completion is an experimental feature, don't use on production")
-
-        const transform = new Transform({
-            transform: (chunk, _, callback) => {
-                // Remove buffer header "data: "
-                // [0x64, 0x61, 0x74, 0x61, 0x3a, 0x20]
-                const body: string = chunk.slice(6).toString().trim()
-                if (body && body[0] !== '[') {
-                    try {
-                        const completion = JSON.parse(body) as Completion
-                        return callback(undefined, completion.choices[0].text)
-                    } catch (e) {
-                        throw new Error(`Faile to parse: "${chunk.toString()}"`)
-                    }
-                }
-
-                callback()
-            },
+    public async completeFromModelAndStream(fineTunedModel: string, options: CompletionRequest): Promise<Readable> {
+        const request = await this.requestRaw(`/completions`, 'POST', {
+            ...options,
+            model: fineTunedModel,
+            stream: true,
         })
-
-        return request.body.pipe(transform)
+        return request.body.pipe(this.eventStreamTransformer())
     }
 
     // https://beta.openai.com/docs/engines/content-filter
@@ -221,9 +209,16 @@ export class OpenAI {
         if (!response.ok) {
             let errorBody
             try {
-                errorBody = await response.text()
+                const {
+                    error: { message },
+                } = await response.json()
+                errorBody = message
             } catch {
-                errorBody = 'Failed to get body as text'
+                try {
+                    errorBody = await response.text()
+                } catch {
+                    errorBody = 'Failed to get body as text'
+                }
             }
 
             throw new Error(`OpenAI did not return ok: ${response.status} ~ Error body: ${errorBody}`)
@@ -235,5 +230,36 @@ export class OpenAI {
     private async request<TResponse>(path: string, method: 'GET' | 'POST' | 'DELETE', body?: any): Promise<TResponse> {
         const response = await this.requestRaw(path, method, body)
         return response.json() as Promise<TResponse>
+    }
+
+    private eventStreamTransformer(): Transform {
+        // [0x64, 0x61, 0x74, 0x61, 0x3a, 0x20]
+        const dataHeader = Buffer.from('data: ')
+
+        return new Transform({
+            transform: function (this: Transform & { prevChunk: Buffer | undefined }, chunk: Buffer, _, callback) {
+                // If current chunk starts with "data:"
+                if (
+                    chunk.length >= dataHeader.length &&
+                    dataHeader.compare(chunk, undefined, dataHeader.length) === 0
+                ) {
+                    if (this.prevChunk) {
+                        // Parse previous chunk as completion and push text
+                        const completion = JSON.parse(this.prevChunk.toString()) as Completion
+                        this.push(completion.choices[0].text)
+                        this.prevChunk = undefined
+                    }
+
+                    // Remove current header
+                    chunk = chunk.slice(dataHeader.length)
+                }
+
+                // Append current chunk to previous chunk
+                this.prevChunk = this.prevChunk ? Buffer.concat([this.prevChunk, chunk]) : chunk
+
+                // Should not care about the [DONE] because it will not be handled
+                callback()
+            },
+        })
     }
 }
