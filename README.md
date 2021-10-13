@@ -69,8 +69,6 @@ const completion = await openai.completeFromModel('FINE_TUNED_MODEL', {
 Make a completion and stream the response:
 
 ```js
-// Very experimental! Don't use on production!!!
-// This API may change at any time
 const stream = await openai.completeAndStream('curie', { // or completeFromModelAndStream
     prompt: 'Q: Hello\nA:',
     user: 'user-123'
