@@ -61,7 +61,7 @@ export class OpenAI {
 
     // https://beta.openai.com/docs/guides/fine-tuning/use-a-fine-tuned-model
     public completeFromModel(fineTunedModel: string, options: CompletionRequest): Promise<Completion> {
-        return this.request<Completion>(`/completions`, 'POST', { ...options, model: fineTunedModel})
+        return this.request<Completion>(`/completions`, 'POST', { ...options, model: fineTunedModel })
     }
 
     public async completionTextStream(engine: EngineId, options: CompletionRequest): Promise<Readable> {
@@ -73,7 +73,7 @@ export class OpenAI {
             transform: (chunk, _, callback) => {
                 // Remove buffer header "data: "
                 // [0x64, 0x61, 0x74, 0x61, 0x3a, 0x20]
-                const body = chunk.slice(6).toString().trim()
+                const body: string = chunk.slice(6).toString().trim()
                 if (body && body[0] !== '[') {
                     try {
                         const completion = JSON.parse(body) as Completion
@@ -105,9 +105,9 @@ export class OpenAI {
 
         let label = Number(completion.choices[0].text) as ContentLabel
         if (label === ContentLabel.Unsafe) {
-            const logprobs = completion.choices[0].logprobs.top_logprobs[0]
+            const logprobs = completion.choices[0].logprobs?.top_logprobs[0]
 
-            if (logprobs['2'] < -0.355) {
+            if (logprobs && logprobs['2'] < -0.355) {
                 if (logprobs['0'] && logprobs['1']) {
                     label = logprobs['0'] >= logprobs['1'] ? ContentLabel.Safe : ContentLabel.Sensitive
                 } else if (logprobs['0']) {
@@ -234,6 +234,6 @@ export class OpenAI {
 
     private async request<TResponse>(path: string, method: 'GET' | 'POST' | 'DELETE', body?: any): Promise<TResponse> {
         const response = await this.requestRaw(path, method, body)
-        return response.json()
+        return response.json() as Promise<TResponse>
     }
 }
