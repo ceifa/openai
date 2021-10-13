@@ -58,6 +58,14 @@ const completion = await openai.complete('curie', {
 
 The options argument(2nd) properties follow the exactly same names as shown on official docs.
 
+Make a completion from a fine-tuned model:
+
+```js
+const completion = await openai.completeFromModel('FINE_TUNED_MODEL', {
+    prompt: 'Q: Hello\nA:'
+});
+```
+
 Make a completion and stream the response:
 
 ```js
