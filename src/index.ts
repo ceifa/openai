@@ -59,6 +59,11 @@ export class OpenAI {
         return this.request<Completion>(`/engines/${engine}/completions`, 'POST', options)
     }
 
+    // https://beta.openai.com/docs/guides/fine-tuning/use-a-fine-tuned-model
+    public completeFromModel(fineTunedModel: string, options: CompletionRequest): Promise<Completion> {
+        return this.request<Completion>(`/completions`, 'POST', { ...options, model: fineTunedModel})
+    }
+
     public async completionTextStream(engine: EngineId, options: CompletionRequest): Promise<Readable> {
         const request = await this.requestRaw(`/engines/${engine}/completions`, 'POST', { ...options, stream: true })
 

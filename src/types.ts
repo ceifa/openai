@@ -44,7 +44,7 @@ export interface LogProbs {
 export interface Choice {
     text: string
     index: number
-    logprobs: LogProbs
+    logprobs: LogProbs | null
     finish_reason: string | null
 }
 
