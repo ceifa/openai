@@ -194,7 +194,7 @@ export interface FineTune {
     user_id: string
 }
 
-export const enum ContentLabel {
+export enum ContentLabel {
     Safe,
     Sensitive,
     Unsafe,

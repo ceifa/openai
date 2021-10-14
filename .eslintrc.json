@@ -93,6 +93,7 @@
         "prefer-template": "error",
         "symbol-description": "error",
         "sort-imports-es6-autofix/sort-imports-es6": "error",
+        "@typescript-eslint/ban-ts-comment": "off",
         "@typescript-eslint/array-type": [
             "error",
             {

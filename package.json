@@ -1,7 +1,8 @@
 {
     "name": "openai",
-    "version": "1.0.0",
+    "version": "1.0.0-next.1",
     "description": "Tiny OpenAI API wrapper",
+    "type": "module",
     "main": "dist/index.js",
     "scripts": {
         "start": "tsc -d --watch",
@@ -26,11 +27,10 @@
     },
     "homepage": "https://github.com/ceifa/openai#readme",
     "devDependencies": {
-        "@types/node": "16.10.5",
-        "@types/node-fetch": "2.5.12",
+        "@types/node": "16.10.9",
         "@typescript-eslint/eslint-plugin": "5.0.0",
         "@typescript-eslint/parser": "5.0.0",
-        "eslint": "8.0.0",
+        "eslint": "8.0.1",
         "eslint-config-prettier": "8.3.0",
         "eslint-plugin-prettier": "4.0.0",
         "eslint-plugin-sort-imports-es6-autofix": "0.6.0",
@@ -39,7 +39,6 @@
     },
     "dependencies": {
         "form-data": "4.0.0",
-        "node-fetch": "2.6.5",
-        "tslib": "2.3.1"
+        "node-fetch": "3.0.0"
     }
 }
