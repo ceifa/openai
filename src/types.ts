@@ -16,6 +16,7 @@ export interface Engine {
 export interface List<T> {
     object: 'list'
     data: T[]
+    model?: string
 }
 
 export interface CompletionRequest {
@@ -54,6 +55,12 @@ export interface Completion {
     created: number
     model: string
     choices: Choice[]
+}
+
+export enum ContentLabel {
+    Safe,
+    Sensitive,
+    Unsafe,
 }
 
 export interface SearchRequest {
@@ -194,8 +201,12 @@ export interface FineTune {
     user_id: string
 }
 
-export enum ContentLabel {
-    Safe,
-    Sensitive,
-    Unsafe,
+export interface EmbeddingRequest {
+    input: string | string[]
+}
+
+export interface Embedding {
+    object: 'embedding'
+    embedding: number[]
+    index: number
 }

@@ -6,6 +6,8 @@ import {
     Completion,
     CompletionRequest,
     ContentLabel,
+    Embedding,
+    EmbeddingRequest,
     Engine,
     EngineId,
     File,
@@ -189,6 +191,11 @@ export class OpenAI {
     // https://beta.openai.com/docs/api-reference/fine-tunes/events
     public getFinetuneEvents(finetuneId: string): Promise<FineTuneEvent[]> {
         return this.request<List<FineTuneEvent>>(`/fine-tunes/${finetuneId}/events`, 'GET').then((r) => r.data)
+    }
+
+    // https://beta.openai.com/docs/api-reference/embeddings
+    public createEmbedding(engine: EngineId, options: EmbeddingRequest): Promise<List<Embedding>> {
+        return this.request<List<Embedding>>(`/engines/${engine}/embeddings`, 'POST', options)
     }
 
     private async requestRaw(path: string, method: 'GET' | 'POST' | 'DELETE', body?: any): Promise<Response> {
