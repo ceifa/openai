@@ -1,7 +1,8 @@
 // TODO: Document each interface property
 
 // FIXME: https://github.com/microsoft/TypeScript/issues/29729
-type LiteralUnion<T extends U, U = string> = T | (U & {});
+// eslint-disable-next-line @typescript-eslint/ban-types
+type LiteralUnion<T extends U, U = string> = T | (U & {})
 export type EngineId = LiteralUnion<'davinci' | 'curie' | 'babbage' | 'ada'>
 
 export interface Engine {
