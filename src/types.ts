@@ -1,5 +1,8 @@
 // TODO: Document each interface property
-export type EngineId = 'davinci' | 'curie' | 'babbage' | 'ada' | string
+
+// FIXME: https://github.com/microsoft/TypeScript/issues/29729
+type LiteralUnion<T extends U, U = string> = T | (U & {});
+export type EngineId = LiteralUnion<'davinci' | 'curie' | 'babbage' | 'ada'>
 
 export interface Engine {
     id: EngineId
@@ -31,7 +34,7 @@ export interface CompletionRequest {
     presence_penalty?: number
     frequency_penalty?: number
     best_of?: number
-    logit_bias?: Record<string, unknown>
+    logit_bias?: Record<string, number>
     user?: string
 }
 
@@ -87,7 +90,7 @@ export interface ClassificationRequest {
     temperature?: number
     logprobs?: number
     max_examples?: number
-    logit_bias?: Record<string, unknown>
+    logit_bias?: Record<string, number>
     return_prompt?: boolean
     return_metadata?: boolean
     expand?: string[]
@@ -122,7 +125,7 @@ export interface AnswerRequest {
     max_tokens?: number
     stop?: string | string[]
     n?: number
-    logit_bias?: Record<string, unknown>
+    logit_bias?: Record<string, number>
     return_metadata?: boolean
     return_prompt?: boolean
     expand?: string[]
