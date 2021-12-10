@@ -1,5 +1,5 @@
 [![Build Status](https://github.com/ceifa/openai/actions/workflows/publish.yml/badge.svg)](https://github.com/ceifa/openai/actions/workflows/publish.yml)
-[![npm](https://img.shields.io/npm/v/openai.svg)](https://npmjs.com/package/openai)
+[![npm](https://img.shields.io/npm/v/openai.svg)](https://npmjs.com/package/gpt-x)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 # GPT-X (Previously OpenAI)
@@ -13,13 +13,13 @@ A tiny async production-ready wrapper for [OpenAI GPT-3 API](https://beta.openai
 ### Via npm
 
 ```sh
-npm install openai
+npm install gpt-x
 ```
 
 ### Via yarn
 
 ```sh
-yarn add openai
+yarn add gpt-x
 ```
 
 ## Usage
@@ -27,9 +27,9 @@ yarn add openai
 ### Initialize OpenAI
 
 ```js
-import { OpenAI } from 'openai';
+import { OpenAI } from 'gpt-x';
 // or the commonJS way:
-const { OpenAI } = require('openai');
+const { OpenAI } = require('gpt-x');
 
 // new OpenAI(apikey: string, organization?: string, version?: string)
 const openai = new OpenAI(process.env.API_KEY, 'my-organization');
@@ -201,4 +201,14 @@ Get fine-tune events of a fine-tune:
 
 ```js
 const events = await openai.getFinetuneEvents('ftjob-AF1WoRqd3aJ');
+```
+
+### Embedding
+
+Create an embedding:
+
+```js
+const embedding = await openai.createEmbedding('babbage-similarity', {
+    input: 'Sample document text goes here'
+})
 ```
