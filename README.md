@@ -2,7 +2,7 @@
 [![npm](https://img.shields.io/npm/v/openai.svg)](https://npmjs.com/package/openai)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-# OpenAI
+# GPT-X (Previously OpenAI)
 
 A tiny async production-ready wrapper for [OpenAI GPT-3 API](https://beta.openai.com/docs/api-reference/introduction).
 
