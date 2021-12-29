@@ -1,0 +1,1 @@
+console.log(`\u001b[0m\u001b[96mEnter in our community about Natural language generation to share and learn about OpenAI, prompt engineering and other providers: \u001b[94mhttps://discord.gg/8ZwcSt9XkD\u001b[0m\u001b[22m\u001b[39m`);

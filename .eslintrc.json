@@ -15,7 +15,7 @@
     "env": {
         "es6": true
     },
-    "ignorePatterns": ["dist/*", "sample/*", "rollup.config.js"],
+    "ignorePatterns": ["dist/*", "sample/*", "rollup.config.js", "postinstall.js"],
     "rules": {
         "no-console": "off",
         "@typescript-eslint/no-unsafe-call": "off",
